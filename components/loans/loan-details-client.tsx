@@ -5,6 +5,7 @@ import { Loan, LoanPhoto, ReminderLog } from "@prisma/client"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { useRouter } from "next/navigation"
+import { useQuery } from "@tanstack/react-query"
 import { 
   ArrowLeft, 
   Calendar, 
@@ -15,7 +16,8 @@ import {
   CheckCircle,
   AlertCircle,
   Clock,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ReturnLoanDialog } from "@/components/loans/return-loan-dialog"
@@ -33,8 +35,20 @@ interface LoanDetailsClientProps {
   loan: LoanWithRelations
 }
 
-export function LoanDetailsClient({ loan }: LoanDetailsClientProps) {
+export function LoanDetailsClient({ loan: initialLoan }: LoanDetailsClientProps) {
   const router = useRouter()
+  
+  // Usar React Query para obtener datos actualizados
+  const { data: loan = initialLoan, isLoading, refetch } = useQuery({
+    queryKey: ["loan", initialLoan.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/loans/${initialLoan.id}`)
+      if (!response.ok) throw new Error("Error al cargar el préstamo")
+      return response.json() as Promise<LoanWithRelations>
+    },
+    initialData: initialLoan,
+  })
+
   const isOverdue = !loan.returned_at && new Date(loan.return_by) < new Date()
   const isReturned = !!loan.returned_at
 
@@ -217,7 +231,7 @@ export function LoanDetailsClient({ loan }: LoanDetailsClientProps) {
       <div className="bg-card rounded-lg border p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Fotos del artículo</h2>
-          <PhotoUpload loanId={loan.id} />
+          <PhotoUpload loanId={loan.id} onUploadComplete={() => refetch()} />
         </div>
         
         {loan.photos.length > 0 ? (

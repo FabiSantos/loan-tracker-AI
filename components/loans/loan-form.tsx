@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, ChangeEvent } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
-import { CalendarIcon, Loader2 } from "lucide-react"
+import { CalendarIcon, Loader2, Upload, X, ImageIcon } from "lucide-react"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
@@ -56,6 +56,9 @@ type LoanFormValues = z.infer<typeof loanFormSchema>
 
 export function LoanForm() {
   const [open, setOpen] = useState(false)
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [previews, setPreviews] = useState<string[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const queryClient = useQueryClient()
   const { toast } = useToast()
 
@@ -88,7 +91,21 @@ export function LoanForm() {
 
       return response.json()
     },
-    onSuccess: () => {
+    onSuccess: async (data) => {
+      // Subir fotos si hay alguna seleccionada
+      if (selectedFiles.length > 0) {
+        for (const file of selectedFiles) {
+          const formData = new FormData()
+          formData.append("file", file)
+          formData.append("type", "loan")
+
+          await fetch(`/api/loans/${data.id}/photos`, {
+            method: "POST",
+            body: formData,
+          })
+        }
+      }
+
       queryClient.invalidateQueries({ queryKey: ["loans"] })
       toast({
         title: "Préstamo creado",
@@ -96,6 +113,8 @@ export function LoanForm() {
       })
       setOpen(false)
       form.reset()
+      setSelectedFiles([])
+      setPreviews([])
     },
     onError: () => {
       toast({
@@ -105,6 +124,38 @@ export function LoanForm() {
       })
     },
   })
+
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    
+    if (files.length > 5) {
+      toast({
+        title: "Límite excedido",
+        description: "Máximo 5 fotos por préstamo",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const newPreviews: string[] = []
+    files.forEach((file) => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        newPreviews.push(reader.result as string)
+        if (newPreviews.length === files.length) {
+          setPreviews(newPreviews)
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+
+    setSelectedFiles(files)
+  }
+
+  const removeFile = (index: number) => {
+    setSelectedFiles(selectedFiles.filter((_, i) => i !== index))
+    setPreviews(previews.filter((_, i) => i !== index))
+  }
 
   function onSubmit(values: LoanFormValues) {
     createLoan.mutate(values)
@@ -281,6 +332,51 @@ export function LoanForm() {
                 </FormItem>
               )}
             />
+            
+            {/* Campo de fotos */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Fotos del artículo (opcional)</label>
+              <div
+                className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground mb-1" />
+                <p className="text-xs text-muted-foreground">
+                  Haz clic para seleccionar hasta 5 imágenes
+                </p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+              </div>
+              
+              {/* Previews */}
+              {previews.length > 0 && (
+                <div className="grid grid-cols-5 gap-2">
+                  {previews.map((preview, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-16 object-cover rounded"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeFile(index)}
+                        className="absolute -top-1 -right-1 p-0.5 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
             <DialogFooter>
               <Button type="submit" disabled={createLoan.isPending}>
                 {createLoan.isPending && (

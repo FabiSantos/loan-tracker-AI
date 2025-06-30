@@ -30,7 +30,7 @@ export function DashboardClient({
   const [filter, setFilter] = useState<'all' | 'active' | 'overdue' | 'returned'>('all')
   const [search, setSearch] = useState('')
 
-  const { data: loans, isLoading } = useQuery({
+  const { data: loans = [], isLoading } = useQuery({
     queryKey: ['loans'],
     queryFn: async () => {
       const response = await fetch('/api/loans')
