@@ -335,22 +335,35 @@ export function LoanForm() {
             
             {/* Campo de fotos */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Fotos del artículo (opcional)</label>
+              <label htmlFor="photo-upload" className="text-sm font-medium">
+                Fotos del artículo (opcional)
+              </label>
               <div
-                className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-primary/50 transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
                 onClick={() => fileInputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    fileInputRef.current?.click()
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label="Seleccionar imágenes del artículo"
               >
-                <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground mb-1" />
+                <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground mb-1" aria-hidden="true" />
                 <p className="text-xs text-muted-foreground">
                   Haz clic para seleccionar hasta 5 imágenes
                 </p>
                 <input
                   ref={fileInputRef}
+                  id="photo-upload"
                   type="file"
                   multiple
                   accept="image/jpeg,image/jpg,image/png,image/webp"
                   onChange={handleFileSelect}
-                  className="hidden"
+                  className="sr-only"
+                  aria-label="Seleccionar archivos de imagen"
                 />
               </div>
               

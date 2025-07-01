@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,11 +30,14 @@ export function ImageViewer({ images, initialIndex = 0 }: ImageViewerProps) {
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {images.map((image, index) => (
-          <div key={image.id} className="relative group">
-            <img
+          <div key={image.id} className="relative group aspect-square">
+            <Image
               src={image.url}
               alt={`Foto ${index + 1}`}
-              className="aspect-square object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+              loading="lazy"
               onClick={() => {
                 setCurrentIndex(index)
                 setOpen(true)
@@ -45,13 +49,18 @@ export function ImageViewer({ images, initialIndex = 0 }: ImageViewerProps) {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden">
-          <div className="relative">
+          <div className="relative w-full h-[80vh]">
             {/* Imagen */}
-            <img
-              src={images[currentIndex]?.url}
-              alt={`Foto ${currentIndex + 1}`}
-              className="w-full h-full max-h-[80vh] object-contain"
-            />
+            {images[currentIndex] && (
+              <Image
+                src={images[currentIndex].url}
+                alt={`Foto ${currentIndex + 1}`}
+                fill
+                className="object-contain"
+                sizes="100vw"
+                priority
+              />
+            )}
 
             {/* Controles */}
             <Button
