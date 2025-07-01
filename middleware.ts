@@ -7,14 +7,24 @@ export async function middleware(request: NextRequest) {
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   })
-  const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
+  const pathname = request.nextUrl.pathname
+  const isAuthPage = pathname.startsWith('/auth')
   
-  if (!token && !isAuthPage) {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
+  // Allow API routes
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next()
   }
   
+  // Redirect to login if not authenticated and not on auth page
+  if (!token && !isAuthPage) {
+    const loginUrl = new URL('/auth/login', request.url)
+    return NextResponse.redirect(loginUrl)
+  }
+  
+  // Redirect to dashboard if authenticated and on auth page
   if (token && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    const dashboardUrl = new URL('/dashboard', request.url)
+    return NextResponse.redirect(dashboardUrl)
   }
   
   return NextResponse.next()
