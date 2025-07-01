@@ -30,9 +30,15 @@ pnpm test
 Crea un archivo `.env.local` con las siguientes variables:
 
 ```env
-DATABASE_URL="file:./dev.db"
+# Para desarrollo local con SQLite:
+#DATABASE_URL="file:./dev.db"
+
+# Para producción con PostgreSQL (Neon):
+DATABASE_URL="postgresql://user:password@host/database?sslmode=require"
+
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="tu-secret-key-aqui"
+JWT_SECRET="tu-jwt-secret-aqui"
 ```
 
 ## Características

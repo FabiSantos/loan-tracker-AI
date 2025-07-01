@@ -166,10 +166,11 @@ model Loan {
 
 ## 📊 Decisiones Técnicas
 
-### ¿Por qué SQLite?
-- Perfecto para desarrollo local y aplicaciones pequeñas
-- Sin configuración de servidor
-- Fácil migración a PostgreSQL en producción
+### ¿Por qué SQLite/PostgreSQL?
+- SQLite: Perfecto para desarrollo local y aplicaciones pequeñas
+- PostgreSQL: Base de datos robusta para producción
+- Neon: PostgreSQL serverless con escalado automático
+- Prisma: ORM que soporta ambos proveedores sin cambios de código
 
 ### ¿Por qué Radix UI?
 - Componentes accesibles por defecto
@@ -216,6 +217,30 @@ model Loan {
    - Solución: Asegurar que todos los tipos estén correctamente definidos
    - Usar underscore prefix para variables no utilizadas
 
+8. **Migración de SQLite a PostgreSQL**
+   - Error: Provider mismatch en migration_lock.toml
+   - Solución: Eliminar carpeta migrations y ejecutar `prisma migrate dev`
+
+## 🗄️ Configuración de Base de Datos
+
+### Desarrollo Local (SQLite)
+```bash
+# .env
+DATABASE_URL="file:./dev.db"
+```
+
+### Producción (PostgreSQL/Neon)
+```bash
+# .env
+DATABASE_URL="postgresql://user:password@host/database?sslmode=require"
+```
+
+### Migración entre Proveedores
+1. Cambiar provider en schema.prisma
+2. Actualizar DATABASE_URL en .env
+3. Eliminar carpeta prisma/migrations
+4. Ejecutar `npx prisma migrate dev --name init`
+
 ## 🚀 Comandos Útiles
 
 ```bash
@@ -227,6 +252,7 @@ pnpm prisma studio    # GUI para base de datos
 pnpm prisma generate  # Generar cliente
 pnpm prisma db push   # Sincronizar esquema
 pnpm prisma migrate dev # Crear migración
+pnpm prisma migrate deploy # Aplicar migraciones en producción
 
 # Testing
 pnpm test            # Ejecutar todos los tests
