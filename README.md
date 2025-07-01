@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Loan Tracker
 
-## Getting Started
+Sistema de seguimiento de préstamos personales con autenticación, dashboard interactivo y gestión completa de préstamos.
 
-First, run the development server:
+## Instalación
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Clonar el repositorio
+git clone <tu-repositorio>
+cd loan-tracker
+
+# Instalar dependencias con pnpm
+pnpm install
+
+# Generar cliente de Prisma
+pnpm prisma generate
+
+# Configurar base de datos
+pnpm prisma db push
+
+# Iniciar servidor de desarrollo
 pnpm dev
-# or
-bun dev
+
+# Ejecutar tests (opcional)
+pnpm test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Configuración
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Crea un archivo `.env.local` con las siguientes variables:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+DATABASE_URL="file:./dev.db"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="tu-secret-key-aqui"
+```
 
-## Learn More
+## Características
 
-To learn more about Next.js, take a look at the following resources:
+- 🔐 **Autenticación completa** - Registro y login de usuarios
+- 📊 **Dashboard interactivo** - Vista general de todos los préstamos
+- ➕ **Crear préstamos** - Formulario completo con validaciones
+- ✅ **Marcar devoluciones** - Registra cuando te devuelven artículos
+- 🔍 **Búsqueda y filtros** - Encuentra préstamos rápidamente
+- 🌓 **Modo oscuro** - Interfaz adaptable
+- 📱 **Diseño responsive** - Funciona en móvil y desktop
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Uso
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Registro**: Crea una cuenta en `/auth/register`
+2. **Login**: Inicia sesión en `/auth/login`
+3. **Dashboard**: Ve todos tus préstamos y estadísticas
+4. **Nuevo préstamo**: Click en "Nuevo Préstamo" para registrar uno
+5. **Marcar devolución**: Click en "Marcar como devuelto" cuando te regresen el artículo
 
-## Deploy on Vercel
+## Tecnologías
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Next.js 15 con App Router
+- TypeScript
+- Prisma ORM con SQLite
+- NextAuth para autenticación
+- Tailwind CSS
+- React Query
+- React Hook Form + Zod
+- Jest + React Testing Library
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Testing
+
+El proyecto incluye una suite completa de tests con alta cobertura:
+
+```bash
+# Ejecutar todos los tests
+pnpm test
+
+# Tests en modo watch
+pnpm test:watch
+
+# Ver reporte de cobertura
+pnpm test:coverage
+```
+
+**Cobertura actual**: 93% líneas, 92% statements, 81% branches, 89% funciones

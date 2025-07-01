@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db/prisma'
 import { DashboardClient } from '@/components/dashboard/dashboard-client'
+import { DashboardStats } from '@/components/dashboard/dashboard-stats'
 
 export default async function DashboardPage() {
   const session = await getServerSession()
@@ -38,30 +39,7 @@ export default async function DashboardPage() {
     <div className="container mx-auto p-4 md:p-6">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
       
-      <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <div className="bg-card p-6 rounded-lg border">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Préstamos Activos
-          </h3>
-          <p className="text-3xl font-bold mt-2">{activeLoans.length}</p>
-        </div>
-        
-        <div className="bg-card p-6 rounded-lg border">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Préstamos Vencidos
-          </h3>
-          <p className="text-3xl font-bold mt-2 text-destructive">
-            {overdueLoans.length}
-          </p>
-        </div>
-        
-        <div className="bg-card p-6 rounded-lg border">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Préstamos Devueltos
-          </h3>
-          <p className="text-3xl font-bold mt-2">{returnedLoans.length}</p>
-        </div>
-      </div>
+      <DashboardStats />
 
       <DashboardClient 
         activeLoans={activeLoans}

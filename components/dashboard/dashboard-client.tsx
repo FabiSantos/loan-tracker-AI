@@ -4,10 +4,13 @@ import { useState } from 'react'
 import { Loan, LoanPhoto } from '@prisma/client'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { LoanForm } from '@/components/loans/loan-form'
+import { ReturnLoanDialog } from '@/components/loans/return-loan-dialog'
 import Link from 'next/link'
-import { Plus, Search, Filter } from 'lucide-react'
+import { Search, Loader2 } from 'lucide-react'
 
 type LoanWithPhotos = Loan & {
   photos: LoanPhoto[]
@@ -20,14 +23,27 @@ interface DashboardClientProps {
 }
 
 export function DashboardClient({
-  activeLoans,
-  overdueLoans,
-  returnedLoans,
+  activeLoans: initialActiveLoans,
+  overdueLoans: initialOverdueLoans,
+  returnedLoans: initialReturnedLoans,
 }: DashboardClientProps) {
   const [filter, setFilter] = useState<'all' | 'active' | 'overdue' | 'returned'>('all')
   const [search, setSearch] = useState('')
 
-  const allLoans = [...activeLoans, ...overdueLoans, ...returnedLoans]
+  const { data: loans = [], isLoading } = useQuery({
+    queryKey: ['loans'],
+    queryFn: async () => {
+      const response = await fetch('/api/loans')
+      if (!response.ok) throw new Error('Error al cargar los préstamos')
+      return response.json() as Promise<LoanWithPhotos[]>
+    },
+    initialData: [...initialActiveLoans, ...initialOverdueLoans, ...initialReturnedLoans],
+  })
+
+  const activeLoans = loans.filter(loan => !loan.returned_at && new Date(loan.return_by) >= new Date())
+  const overdueLoans = loans.filter(loan => !loan.returned_at && new Date(loan.return_by) < new Date())
+  const returnedLoans = loans.filter(loan => loan.returned_at)
+  const allLoans = loans
   
   let filteredLoans = allLoans
   
@@ -67,7 +83,7 @@ export function DashboardClient({
           
           <select
             value={filter}
-            onChange={(e) => setFilter(e.target.value as any)}
+            onChange={(e) => setFilter(e.target.value as 'all' | 'active' | 'overdue' | 'returned')}
             className="px-3 py-2 rounded-md border bg-background"
           >
             <option value="all">Todos</option>
@@ -77,12 +93,7 @@ export function DashboardClient({
           </select>
         </div>
 
-        <Link href="/loans/new">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Nuevo Préstamo
-          </Button>
-        </Link>
+        <LoanForm />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -138,11 +149,9 @@ export function DashboardClient({
                     </Button>
                   </Link>
                   {!loan.returned_at && (
-                    <Link href={`/loans/${loan.id}/return`} className="flex-1">
-                      <Button size="sm" className="w-full">
-                        Marcar devolución
-                      </Button>
-                    </Link>
+                    <div className="flex-1">
+                      <ReturnLoanDialog loan={loan} />
+                    </div>
                   )}
                 </div>
               </div>
@@ -151,7 +160,14 @@ export function DashboardClient({
         })}
       </div>
 
-      {filteredLoans.length === 0 && (
+      {isLoading && (
+        <div className="text-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+          <p className="text-muted-foreground mt-2">Cargando préstamos...</p>
+        </div>
+      )}
+
+      {!isLoading && filteredLoans.length === 0 && (
         <div className="text-center py-12">
           <p className="text-muted-foreground">No se encontraron préstamos</p>
         </div>
