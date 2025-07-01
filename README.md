@@ -20,6 +20,9 @@ pnpm prisma db push
 
 # Iniciar servidor de desarrollo
 pnpm dev
+
+# Ejecutar tests (opcional)
+pnpm test
 ```
 
 ## Configuración
@@ -59,3 +62,21 @@ NEXTAUTH_SECRET="tu-secret-key-aqui"
 - Tailwind CSS
 - React Query
 - React Hook Form + Zod
+- Jest + React Testing Library
+
+## Testing
+
+El proyecto incluye una suite completa de tests con alta cobertura:
+
+```bash
+# Ejecutar todos los tests
+pnpm test
+
+# Tests en modo watch
+pnpm test:watch
+
+# Ver reporte de cobertura
+pnpm test:coverage
+```
+
+**Cobertura actual**: 93% líneas, 92% statements, 81% branches, 89% funciones

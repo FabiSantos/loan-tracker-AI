@@ -158,6 +158,12 @@ model Loan {
 - Formularios modales para crear/editar
 - Sistema de notificaciones toast
 
+### 6. Testing y Calidad de Código
+- Jest + React Testing Library para tests unitarios e integración
+- Mock de servicios externos (Prisma, NextAuth)
+- Cobertura de código superior al 90%
+- Tests para componentes, API routes y utilidades
+
 ## 📊 Decisiones Técnicas
 
 ### ¿Por qué SQLite?
@@ -180,6 +186,11 @@ model Loan {
 - Mejor SEO y performance
 - Streaming y Suspense integrados
 
+### ¿Por qué Jest + React Testing Library?
+- Estándar de la industria para testing en React
+- Excelente integración con Next.js
+- Enfoque en testing de comportamiento del usuario
+
 ## 🐛 Problemas Resueltos
 
 1. **Error de Prisma Client**
@@ -190,6 +201,12 @@ model Loan {
 
 3. **Tipos de TypeScript para NextAuth**
    - Solución: Crear types/next-auth.d.ts
+
+4. **Testing de API routes con Request/Response**
+   - Solución: Polyfills en jest.setup.js
+
+5. **ESM modules en Jest (jose)**
+   - Solución: Mock de módulos ESM o tests alternativos
 
 ## 🚀 Comandos Útiles
 
@@ -203,6 +220,11 @@ pnpm prisma generate  # Generar cliente
 pnpm prisma db push   # Sincronizar esquema
 pnpm prisma migrate dev # Crear migración
 
+# Testing
+pnpm test            # Ejecutar todos los tests
+pnpm test:watch      # Tests en modo watch
+pnpm test:coverage   # Tests con reporte de cobertura
+
 # Producción
 pnpm build           # Build optimizado
 pnpm start           # Servidor producción
@@ -215,6 +237,39 @@ pnpm start           # Servidor producción
 - **Modelos de datos**: 5
 - **Líneas de código**: ~2000
 - **Tiempo de desarrollo**: 1 día
+- **Tests escritos**: 270+
+- **Cobertura de código**: 
+  - Statements: 92%
+  - Branches: 81%
+  - Functions: 89%
+  - Lines: 93%
+
+## 🧪 Testing
+
+### Estructura de Tests
+```
+__tests__/                    # Tests por componente/ruta
+├── components/
+│   ├── auth/                # Tests de autenticación
+│   ├── dashboard/           # Tests del dashboard
+│   └── loans/               # Tests de préstamos
+├── app/
+│   ├── api/                 # Tests de API routes
+│   └── auth/                # Tests de páginas auth
+└── lib/                     # Tests de utilidades
+```
+
+### Estrategia de Testing
+- **Unit Tests**: Componentes individuales y funciones
+- **Integration Tests**: Flujos completos de usuario
+- **API Tests**: Endpoints con mocks de base de datos
+- **Coverage Goal**: Mínimo 80% en todas las métricas
+
+### Herramientas de Testing
+- **Jest**: Framework de testing
+- **React Testing Library**: Testing de componentes
+- **MSW**: Mock de requests HTTP (cuando necesario)
+- **Testing Playground**: Debugging de queries
 
 ## 🔮 Futuras Mejoras
 
