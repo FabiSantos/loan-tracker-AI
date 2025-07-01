@@ -208,6 +208,14 @@ model Loan {
 5. **ESM modules en Jest (jose)**
    - Solución: Mock de módulos ESM o tests alternativos
 
+6. **Build errors con archivos de test**
+   - Solución: Configurar ESLint para ignorar archivos de test durante build
+   - Usar `ignores` en eslint.config.mjs
+
+7. **TypeScript errors en componentes**
+   - Solución: Asegurar que todos los tipos estén correctamente definidos
+   - Usar underscore prefix para variables no utilizadas
+
 ## 🚀 Comandos Útiles
 
 ```bash
