@@ -15,7 +15,7 @@ export default async function LoansLayout({
 
   return (
     <>
-      <MainNav />
+      <MainNav userEmail={session.user?.email || ''} />
       <main className="min-h-[calc(100vh-4rem)]">{children}</main>
     </>
   )

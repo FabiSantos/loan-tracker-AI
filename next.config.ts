@@ -13,6 +13,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  typescript: {
+    // Skip TypeScript checking during build (tests have their own checking)
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    // Don't run ESLint on test files during build
+    ignoreDuringBuilds: false,
+    dirs: ['app', 'components', 'lib'].filter(dir => !dir.includes('__tests__')),
+  },
 };
 
 export default nextConfig;

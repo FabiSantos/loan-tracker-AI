@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Loan, LoanPhoto } from '@prisma/client'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -83,7 +83,7 @@ export function DashboardClient({
           
           <select
             value={filter}
-            onChange={(e) => setFilter(e.target.value as any)}
+            onChange={(e) => setFilter(e.target.value as 'all' | 'active' | 'overdue' | 'returned')}
             className="px-3 py-2 rounded-md border bg-background"
           >
             <option value="all">Todos</option>

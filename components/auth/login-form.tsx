@@ -45,7 +45,7 @@ export function LoginForm() {
         router.push('/dashboard')
         router.refresh()
       }
-    } catch (error) {
+    } catch {
       setError('Error al iniciar sesión')
     } finally {
       setIsLoading(false)

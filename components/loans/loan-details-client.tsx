@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Loan, LoanPhoto, ReminderLog } from "@prisma/client"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -16,15 +15,12 @@ import {
   CheckCircle,
   AlertCircle,
   Clock,
-  ChevronRight,
-  Loader2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ReturnLoanDialog } from "@/components/loans/return-loan-dialog"
 import { PhotoUpload } from "@/components/loans/photo-upload"
 import { Badge } from "@/components/ui/badge"
 import { ImageViewer } from "@/components/ui/image-viewer"
-import Link from "next/link"
 
 type LoanWithRelations = Loan & {
   photos: LoanPhoto[]
@@ -39,7 +35,7 @@ export function LoanDetailsClient({ loan: initialLoan }: LoanDetailsClientProps)
   const router = useRouter()
   
   // Usar React Query para obtener datos actualizados
-  const { data: loan = initialLoan, isLoading, refetch } = useQuery({
+  const { data: loan = initialLoan, refetch } = useQuery({
     queryKey: ["loan", initialLoan.id],
     queryFn: async () => {
       const response = await fetch(`/api/loans/${initialLoan.id}`)

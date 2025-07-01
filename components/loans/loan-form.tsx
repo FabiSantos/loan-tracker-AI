@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
-import { CalendarIcon, Loader2, Upload, X, ImageIcon } from "lucide-react"
+import { CalendarIcon, Loader2, X, ImageIcon } from "lucide-react"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
@@ -372,6 +372,7 @@ export function LoanForm() {
                 <div className="grid grid-cols-5 gap-2">
                   {previews.map((preview, index) => (
                     <div key={index} className="relative group">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={preview}
                         alt={`Preview ${index + 1}`}
