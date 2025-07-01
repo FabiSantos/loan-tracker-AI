@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { z } from "zod"
 import { prisma } from "@/lib/db/prisma"
+import { authOptions } from "@/lib/auth/authOptions"
 
 const loanSchema = z.object({
   recipient_name: z.string().min(2),
@@ -15,7 +16,7 @@ const loanSchema = z.object({
 
 export async function GET() {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })
@@ -46,7 +47,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })

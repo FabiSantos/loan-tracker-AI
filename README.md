@@ -2,6 +2,8 @@
 
 Sistema de seguimiento de préstamos personales con autenticación, dashboard interactivo y gestión completa de préstamos.
 
+🌐 **Demo en vivo**: [https://loan-tracker-ai-fabi.vercel.app](https://loan-tracker-ai-fabi.vercel.app)
+
 ## Instalación
 
 ```bash
@@ -27,13 +29,33 @@ pnpm test
 
 ## Configuración
 
-Crea un archivo `.env.local` con las siguientes variables:
+### Desarrollo Local
+
+Crea un archivo `.env` con las siguientes variables:
 
 ```env
 DATABASE_URL="file:./dev.db"
+JWT_SECRET="tu-jwt-secret-aqui"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="tu-secret-key-aqui"
 ```
+
+### Producción (Vercel)
+
+Para desplegar en Vercel:
+
+1. Fork este repositorio
+2. Conecta tu repositorio con Vercel
+3. Configura las siguientes variables de entorno en Vercel:
+
+```env
+DATABASE_URL="postgresql://user:password@host/database?sslmode=require"
+JWT_SECRET="genera-un-secret-seguro"
+NEXTAUTH_URL="https://tu-app.vercel.app"
+NEXTAUTH_SECRET="genera-otro-secret-seguro"
+```
+
+**Nota**: Puedes usar PostgreSQL con [Neon](https://neon.tech) para una base de datos gratuita.
 
 ## Características
 
@@ -57,12 +79,13 @@ NEXTAUTH_SECRET="tu-secret-key-aqui"
 
 - Next.js 15 con App Router
 - TypeScript
-- Prisma ORM con SQLite
+- Prisma ORM con PostgreSQL (producción) / SQLite (desarrollo)
 - NextAuth para autenticación
 - Tailwind CSS
 - React Query
 - React Hook Form + Zod
 - Jest + React Testing Library
+- Vercel (deployment)
 
 ## Testing
 
