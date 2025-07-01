@@ -3,9 +3,10 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db/prisma'
 import { DashboardClient } from '@/components/dashboard/dashboard-client'
 import { DashboardStats } from '@/components/dashboard/dashboard-stats'
+import { authOptions } from '@/lib/auth/authOptions'
 
 export default async function DashboardPage() {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
   
   if (!session?.user?.email) {
     redirect('/auth/login')

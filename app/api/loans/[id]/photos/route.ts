@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth/authOptions"
 import { prisma } from "@/lib/db/prisma"
 import { writeFile } from "fs/promises"
 import path from "path"
@@ -10,7 +11,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })
@@ -98,7 +99,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })

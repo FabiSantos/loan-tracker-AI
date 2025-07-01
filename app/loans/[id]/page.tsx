@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db/prisma"
 import { LoanDetailsClient } from "@/components/loans/loan-details-client"
+import { authOptions } from "@/lib/auth/authOptions"
 
 export default async function LoanDetailsPage({
   params,
@@ -9,7 +10,7 @@ export default async function LoanDetailsPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
 
   if (!session?.user?.email) {
     redirect("/auth/login")
